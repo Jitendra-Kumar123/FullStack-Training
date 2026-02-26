@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jitendra Kumar | Software Engineer</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: "#2563EB",
+        darkbg: "#0F172A",
+        darkcard: "#1E293B"
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+      }
+    }
+  }
+}
+</script>
+
+<style>
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s ease;
+}
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+
+<body class="bg-darkbg text-gray-300 font-sans scroll-smooth">
+
+<!-- NAV -->
+<header class="fixed w-full bg-darkbg/80 backdrop-blur-md border-b border-gray-800 z-50">
+  <div class="max-w-6xl mx-auto flex justify-between items-center p-4">
+    <h1 class="text-xl font-bold text-white">JK.</h1>
+    <nav class="space-x-6 hidden md:block">
+      <a href="#about" class="hover:text-primary transition">About</a>
+      <a href="#projects" class="hover:text-primary transition">Projects</a>
+      <a href="#skills" class="hover:text-primary transition">Skills</a>
+      <a href="#contact" class="hover:text-primary transition">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="min-h-screen flex items-center justify-center text-center px-6">
+  <div class="max-w-3xl reveal">
+    <h2 class="text-4xl md:text-6xl font-extrabold text-white leading-tight">
+      Building Scalable <span class="text-primary">AI & Web</span> Solutions
+    </h2>
+    <p class="mt-6 text-lg text-gray-400">
+      MERN Stack Developer focused on scalable backend systems and intelligent AI-driven applications.
+    </p>
+
+    <div class="mt-8 flex justify-center gap-4 flex-wrap">
+      <a href="#projects"
+         class="bg-primary px-6 py-3 rounded-lg text-white font-semibold hover:scale-105 transition duration-300">
+        See Projects
+      </a>
+
+      <a href="resume.pdf" download
+         class="border border-gray-600 px-6 py-3 rounded-lg hover:border-primary hover:text-primary transition duration-300">
+        Download Resume
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-20 px-6 bg-darkcard">
+  <div class="max-w-5xl mx-auto reveal">
+    <h3 class="text-3xl font-bold text-white mb-6">About Me</h3>
+    <p class="text-gray-400 leading-relaxed">
+      Passionate software engineer specializing in MERN stack and AI-powered applications.
+      I build scalable systems with clean UI architecture and strong backend logic.
+      Focused on performance, maintainability, and impactful digital products.
+    </p>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <h3 class="text-3xl font-bold text-white mb-12 text-center reveal">Projects</h3>
+
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <div class="bg-darkcard p-6 rounded-xl hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/20 transition duration-300 reveal">
+        <h4 class="text-xl font-semibold text-white">Soen AI</h4>
+        <p class="mt-3 text-gray-400">
+          AI-powered engineering assistant that provides intelligent recommendations and automation.
+        </p>
+        <div class="mt-4 text-sm text-primary">MERN • AI APIs • OpenAI</div>
+      </div>
+
+      <div class="bg-darkcard p-6 rounded-xl hover:-translate-y-2 hover:shadow-lg hover:shadow-primary/20 transition duration-300 reveal">
+        <h4 class="text-xl font-semibold text-white">ReelDine</h4>
+        <p class="mt-3 text-gray-400">
+          Modern Zomato-style platform with reels-inspired food discovery experience.
+        </p>
+        <div class="mt-4 text-sm text-primary">React • Node • MongoDB</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS (Next-Level Version) -->
+<section id="skills" class="py-24 px-6 bg-darkcard relative overflow-hidden">
+
+  <!-- Background Grid Glow -->
+  <div class="absolute inset-0 opacity-5 bg-[radial-gradient(circle_at_center,_#2563EB_1px,_transparent_1px)] [background-size:40px_40px]"></div>
+
+  <div class="max-w-6xl mx-auto relative z-10">
+    <h3 class="text-3xl font-bold text-white text-center mb-16 reveal">
+      Technical Skill Matrix
+    </h3>
+
+    <!-- Category -->
+    <div class="grid md:grid-cols-3 gap-10">
+
+      <!-- Frontend -->
+      <div class="reveal">
+        <h4 class="text-primary font-semibold mb-6 tracking-wide uppercase text-sm">
+          Frontend
+        </h4>
+        <div class="space-y-4">
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">React.js</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Advanced</span>
+            </div>
+          </div>
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">Tailwind CSS</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Expert</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="reveal">
+        <h4 class="text-primary font-semibold mb-6 tracking-wide uppercase text-sm">
+          Backend
+        </h4>
+        <div class="space-y-4">
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">Node.js</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Advanced</span>
+            </div>
+          </div>
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">MongoDB</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Advanced</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- AI & Tools -->
+      <div class="reveal">
+        <h4 class="text-primary font-semibold mb-6 tracking-wide uppercase text-sm">
+          AI & Tools
+        </h4>
+        <div class="space-y-4">
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">OpenAI API</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Applied AI</span>
+            </div>
+          </div>
+
+          <div class="group bg-darkbg p-5 rounded-xl border border-gray-800 hover:border-primary hover:shadow-lg hover:shadow-primary/20 transition duration-300 cursor-pointer">
+            <div class="flex justify-between items-center">
+              <span class="text-white font-medium">Git & Deployment</span>
+              <span class="text-xs text-gray-400 group-hover:text-primary transition">Production</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="py-20 px-6">
+  <div class="max-w-5xl mx-auto reveal">
+    <h3 class="text-3xl font-bold text-white mb-6">Experience</h3>
+    <p class="text-gray-400">
+      Experience details from resume — structured timeline can be added here.
+    </p>
+  </div>
+</section>
+
+<!-- EDUCATION & CERTIFICATES -->
+<section class="py-20 px-6 bg-darkcard">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10">
+
+    <div class="reveal">
+      <h3 class="text-2xl font-bold text-white mb-4">Education</h3>
+      <p class="text-gray-400">B.Tech in Computer Science</p>
+    </div>
+
+    <div class="reveal">
+      <h3 class="text-2xl font-bold text-white mb-4">Certificates</h3>
+      <p class="text-gray-400">Certification Placeholder 1</p>
+      <p class="text-gray-400">Certification Placeholder 2</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-20 px-6">
+  <div class="max-w-4xl mx-auto text-center reveal">
+    <h3 class="text-3xl font-bold text-white mb-8">Testimonials</h3>
+    <p class="text-gray-400 italic">
+      “Highly skilled developer with strong problem-solving ability.”
+    </p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-20 px-6 bg-darkcard text-center">
+  <div class="max-w-4xl mx-auto reveal">
+    <h3 class="text-3xl font-bold text-white mb-6">Let’s Build Something Great</h3>
+    <a href="mailto:your@email.com"
+       class="bg-primary px-8 py-4 rounded-lg text-white font-semibold hover:scale-105 transition duration-300">
+      Get In Touch
+    </a>
+  </div>
+</section>
+
+<footer class="text-center py-6 text-gray-500 border-t border-gray-800">
+  © 2026 Jitendra Kumar. All rights reserved.
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const skillBars = document.querySelectorAll('.skill-bar');
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('active');
+
+      if(entry.target.querySelector('.skill-bar')){
+        const bar = entry.target.querySelector('.skill-bar');
+        if(bar.parentElement.previousElementSibling.textContent.includes('React')){
+          bar.style.width = "90%";
+        }
+        if(bar.parentElement.previousElementSibling.textContent.includes('Node')){
+          bar.style.width = "85%";
+        }
+        if(bar.parentElement.previousElementSibling.textContent.includes('Mongo')){
+          bar.style.width = "80%";
+        }
+      }
+    }
+  });
+}, { threshold: 0.2 });
+
+reveals.forEach(r => observer.observe(r));
+</script>
+
+</body>
+</html>
