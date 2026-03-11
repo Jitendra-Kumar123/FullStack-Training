@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>document</title>
+</head>
+<body>
+
+<input type="text" id="taskInput" placeholder="Enter a task">
+<button onclick="addTask()">Add</button>
+
+<ul id="taskList"></ul>
+
+<script>
+
+function addTask() {
+
+    var input = document.getElementById("taskInput");
+    var taskText = input.value;
+
+    if(taskText === ""){
+        alert("Enter a task");
+        return;
+    }
+
+    var li = document.createElement("li");
+    li.innerText = taskText;
+
+    li.onclick = function(){
+        li.style.textDecoration = "line-through";
+    }
+
+    document.getElementById("taskList").appendChild(li);
+
+    input.value = "";
+}
+
+</script>
+
+</body>
+</html>
