@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>PERSONA · AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@300;400;500&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+
+:root{
+  --bg:#060610;
+  --surface:rgba(255,255,255,0.042);
+  --surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.14);
+  --text:#eeeef8;
+  --muted:rgba(238,238,248,0.42);
+  --dim:rgba(238,238,248,0.2);
+  --r:18px;
+  --acc:#00e5ff;
+
+  /* safe areas */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
+
+html{height:100%;height:-webkit-fill-available;}
+body{
+  height:100vh;
+  height:-webkit-fill-available;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ── Background ── */
+.bg-fx{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.orb{
+  position:absolute;border-radius:50%;
+  filter:blur(90px);opacity:0.18;
+  animation:drift var(--dur,20s) ease-in-out infinite alternate;
+}
+.o1{width:420px;height:420px;background:radial-gradient(circle,#00e5ff,#0040ff 60%,transparent);top:-100px;left:-100px;--dur:18s;}
+.o2{width:360px;height:360px;background:radial-gradient(circle,#a855f7,#ec4899 60%,transparent);bottom:-80px;right:-80px;--dur:22s;animation-delay:-8s;}
+.o3{width:260px;height:260px;background:radial-gradient(circle,#fb923c,transparent);top:40%;left:35%;--dur:26s;opacity:0.1;animation-delay:-14s;}
+@keyframes drift{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(40px,30px) scale(1.12);}
+}
+.grain{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
+}
+
+/* ── App shell ── */
+.app{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  height:100vh;height:-webkit-fill-available;
+}
+
+/* ── Top bar ── */
+.topbar{
+  padding: calc(var(--sat) + 14px) 20px 14px;
+  display:flex;align-items:center;gap:12px;
+  background:rgba(6,6,16,0.72);
+  backdrop-filter:blur(28px);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+  position:relative;z-index:10;
+}
+.topbar-avatar{
+  width:40px;height:40px;border-radius:13px;
+  display:grid;place-items:center;font-size:20px;
+  background:var(--surface);
+  border:1.5px solid var(--acc);
+  box-shadow:0 0 18px -4px var(--acc);
+  transition:all 0.4s cubic-bezier(.4,0,.2,1);
+  flex-shrink:0;
+}
+.topbar-info{flex:1;min-width:0;}
+.topbar-name{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:15px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:all 0.3s;
+}
+.topbar-sub{
+  font-size:10.5px;color:var(--acc);
+  font-family:'DM Mono',monospace;letter-spacing:0.05em;
+  display:flex;align-items:center;gap:5px;
+  transition:color 0.4s;
+  margin-top:1px;
+}
+.live-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--acc);
+  box-shadow:0 0 6px var(--acc);
+  animation:blink 2s ease-in-out infinite;
+  transition:all 0.4s;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.35;}}
+
+.menu-btn{
+  width:38px;height:38px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--border);
+  display:grid;place-items:center;cursor:pointer;
+  transition:all 0.2s;color:var(--muted);
+  font-size:18px;flex-shrink:0;
+}
+.menu-btn:active{background:var(--surface2);transform:scale(0.93);}
+
+/* ── Persona pill row ── */
+.persona-row{
+  padding:12px 16px;
+  display:flex;gap:8px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scroll-snap-type:x mandatory;
+  scrollbar-width:none;
+  flex-shrink:0;
+  background:rgba(6,6,16,0.5);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.persona-row::-webkit-scrollbar{display:none;}
+
+.p-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  border-radius:100px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  cursor:pointer;white-space:nowrap;
+  scroll-snap-align:start;
+  transition:all 0.25s cubic-bezier(.34,1.4,.64,1);
+  flex-shrink:0;
+  -webkit-user-select:none;user-select:none;
+}
+.p-pill:active{transform:scale(0.94);}
+.p-pill.active{
+  border-color:var(--p-c);
+  background:rgba(255,255,255,0.06);
+  box-shadow:0 0 0 1px var(--p-c), 0 0 20px -6px var(--p-c);
+}
+.p-pill-emoji{font-size:15px;line-height:1;}
+.p-pill-name{
+  font-family:'Syne',sans-serif;font-size:12px;font-weight:700;
+  color:var(--muted);transition:color 0.3s;
+}
+.p-pill.active .p-pill-name{color:var(--text);}
+
+/* ── Messages ── */
+.messages{
+  flex:1;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:20px 16px 12px;
+  display:flex;flex-direction:column;gap:16px;
+  scroll-behavior:smooth;
+}
+.messages::-webkit-scrollbar{width:3px;}
+.messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:3px;}
+
+/* Empty state */
+.empty{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:12px;text-align:center;
+  padding:24px;
+  animation:fadeUp 0.5s ease forwards;
+}
+.empty-emoji{font-size:52px;filter:drop-shadow(0 0 20px var(--acc));transition:filter 0.4s;}
+.empty-title{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;line-height:1.2;}
+.empty-desc{font-size:13px;color:var(--muted);max-width:280px;line-height:1.6;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-top:8px;}
+.chip{
+  padding:7px 13px;border-radius:100px;
+  border:1px solid var(--border);background:var(--surface);
+  font-size:11.5px;color:var(--muted);cursor:pointer;
+  transition:all 0.2s;font-family:'Plus Jakarta Sans',sans-serif;
+}
+.chip:active{transform:scale(0.95);}
+
+/* Message bubbles */
+.msg{
+  display:flex;gap:9px;
+  animation:fadeUp 0.3s cubic-bezier(.34,1.2,.64,1) forwards;
+  opacity:0;
+}
+.msg.user{flex-direction:row-reverse;justify-content:flex-start;}
+.msg.assistant{justify-content:flex-start;}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+.m-avatar{
+  width:30px;height:30px;border-radius:9px;
+  display:grid;place-items:center;font-size:14px;
+  flex-shrink:0;align-self:flex-end;
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+.msg.assistant .m-avatar{
+  border-color:var(--acc);
+  box-shadow:0 0 10px -3px var(--acc);
+  transition:all 0.4s;
+}
+
+.bubble{
+  max-width:78vw;
+  padding:11px 14px;
+  border-radius:16px;
+  font-size:13.5px;line-height:1.65;
+  word-break:break-word;
+}
+.msg.user .bubble{
+  background:var(--acc);
+  color:#04040c;font-weight:500;
+  border-radius:16px 16px 4px 16px;
+  transition:background 0.4s;
+}
+.msg.assistant .bubble{
+  background:var(--surface);
+  border:1px solid var(--border);
+  backdrop-filter:blur(16px);
+  border-radius:16px 16px 16px 4px;
+}
+.p-tag{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--acc);opacity:0.75;
+  display:block;margin-bottom:5px;
+  transition:color 0.4s;
+}
+.bubble pre{
+  background:rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px;padding:10px 12px;
+  margin:8px 0;overflow-x:auto;
+  font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.6;
+}
+.bubble code{
+  font-family:'DM Mono',monospace;font-size:11.5px;
+  background:rgba(255,255,255,0.08);padding:2px 5px;border-radius:4px;
+}
+.bubble pre code{background:none;padding:0;}
+
+/* Typing */
+.typing-wrap{
+  display:flex;gap:9px;align-self:flex-start;
+  animation:fadeUp 0.3s ease forwards;
+}
+.typing-dots{
+  display:flex;gap:4px;align-items:center;
+  padding:12px 14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px 16px 16px 4px;
+}
+.tdot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--acc);
+  animation:tdance 1.2s ease-in-out infinite;
+  transition:background 0.4s;
+}
+.tdot:nth-child(2){animation-delay:0.18s;}
+.tdot:nth-child(3){animation-delay:0.36s;}
+@keyframes tdance{
+  0%,60%,100%{transform:translateY(0);opacity:0.4;}
+  30%{transform:translateY(-5px);opacity:1;}
+}
+
+/* ── Bottom input ── */
+.bottom-bar{
+  padding:10px 14px calc(var(--sab) + 10px);
+  background:rgba(6,6,16,0.75);
+  backdrop-filter:blur(30px);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+.input-wrap{
+  display:flex;align-items:flex-end;gap:10px;
+  background:var(--surface);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  padding:10px 10px 10px 16px;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.input-wrap:focus-within{
+  border-color:var(--acc);
+  box-shadow:0 0 0 1px var(--acc), 0 0 24px -8px var(--acc);
+}
+.chat-input{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  resize:none;min-height:22px;max-height:110px;line-height:1.5;
+}
+.chat-input::placeholder{color:var(--dim);}
+.send-btn{
+  width:36px;height:36px;border-radius:12px;border:none;
+  background:var(--acc);color:#04040c;
+  cursor:pointer;display:grid;place-items:center;
+  flex-shrink:0;font-size:15px;
+  transition:all 0.2s cubic-bezier(.34,1.56,.64,1);
+  -webkit-user-select:none;user-select:none;
+}
+.send-btn:active:not(:disabled){transform:scale(0.9);}
+.send-btn:disabled{opacity:0.35;cursor:not-allowed;}
+
+/* ── Drawer (persona detail) ── */
+.drawer-overlay{
+  position:fixed;inset:0;z-index:50;
+  background:rgba(0,0,0,0.55);
+  opacity:0;pointer-events:none;
+  transition:opacity 0.3s;
+  backdrop-filter:blur(4px);
+}
+.drawer-overlay.open{opacity:1;pointer-events:all;}
+
+.drawer{
+  position:fixed;bottom:0;left:0;right:0;z-index:51;
+  background:#0a0a18;
+  border-top:1px solid var(--border2);
+  border-radius:24px 24px 0 0;
+  padding:0 20px calc(var(--sab) + 24px);
+  transform:translateY(100%);
+  transition:transform 0.38s cubic-bezier(.32,1,.56,1);
+  max-height:70vh;overflow-y:auto;
+}
+.drawer.open{transform:translateY(0);}
+.drawer-handle{
+  width:36px;height:4px;border-radius:2px;
+  background:rgba(255,255,255,0.15);
+  margin:14px auto 20px;
+}
+.drawer-title{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:18px;
+  margin-bottom:18px;
+}
+.drawer-persona{
+  display:flex;align-items:center;gap:14px;
+  padding:14px;border-radius:16px;
+  border:1.5px solid var(--border);
+  background:var(--surface);
+  margin-bottom:10px;cursor:pointer;
+  transition:all 0.22s;
+  -webkit-user-select:none;user-select:none;
+}
+.drawer-persona:active{transform:scale(0.97);}
+.drawer-persona.active{
+  border-color:var(--dp-c);
+  box-shadow:0 0 0 1px var(--dp-c), 0 0 20px -8px var(--dp-c);
+}
+.dp-avatar{
+  width:48px;height:48px;border-radius:14px;
+  display:grid;place-items:center;font-size:24px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  flex-shrink:0;
+}
+.dp-info{flex:1;}
+.dp-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;}
+.dp-role{font-size:10.5px;font-family:'DM Mono',monospace;letter-spacing:0.05em;margin-top:2px;}
+.dp-desc{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px;}
+.dp-check{font-size:18px;flex-shrink:0;opacity:0;}
+.drawer-persona.active .dp-check{opacity:1;}
+
+.p-pill-badge{
+  min-width:16px;height:16px;border-radius:8px;
+  background:var(--p-c);color:#04040c;
+  font-size:9px;font-weight:700;font-family:'DM Mono',monospace;
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:0 4px;
+  opacity:0;transform:scale(0);
+  transition:all 0.25s cubic-bezier(.34,1.4,.64,1);
+}
+.p-pill-badge.show{opacity:1;transform:scale(1);}
+
+/* Slide transition for chat */
+.messages.slide-out{
+  animation:slideOut 0.18s ease forwards;
+}
+.messages.slide-in{
+  animation:slideIn 0.22s cubic-bezier(.34,1.1,.64,1) forwards;
+}
+@keyframes slideOut{
+  to{opacity:0;transform:translateX(-14px);}
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(14px);}
+  to{opacity:1;transform:translateX(0);}
+}
+@media(min-width:600px){
+  .app{max-width:420px;margin:0 auto;border-left:1px solid var(--border);border-right:1px solid var(--border);}
+  .drawer,.drawer-overlay{max-width:420px;left:50%;transform:translateX(-50%) translateY(100%);}
+  .drawer.open{transform:translateX(-50%) translateY(0);}
+  .drawer-overlay{left:0;max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-fx">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+<div class="grain"></div>
+
+<div class="app">
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-avatar" id="topAvatar">🧑‍💻</div>
+    <div class="topbar-info">
+      <div class="topbar-name" id="topName">Senior Developer</div>
+      <div class="topbar-sub">
+        <div class="live-dot" id="liveDot"></div>
+        <span id="topSub">technical mode</span>
+      </div>
+    </div>
+    <div class="menu-btn" onclick="openDrawer()" title="Switch persona">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+      </svg>
+    </div>
+  </header>
+
+  <!-- Persona pill scroller -->
+  <div class="persona-row" id="personaRow"></div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages">
+    <div class="empty" id="emptyState">
+      <div class="empty-emoji" id="emptyEmoji">🧑‍💻</div>
+      <div class="empty-title" id="emptyTitle">Ask the Senior Dev</div>
+      <div class="empty-desc" id="emptyDesc">Technical answers, code snippets, architecture — switch the persona to change perspective.</div>
+      <div class="chips" id="chips"></div>
+    </div>
+  </div>
+
+  <!-- Bottom input -->
+  <div class="bottom-bar">
+    <div class="input-wrap">
+      <textarea class="chat-input" id="chatInput" rows="1"
+        placeholder="Message…"
+        oninput="autoResize(this)"
+        onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Drawer overlay -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
+<!-- Drawer -->
+<div class="drawer" id="drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">Switch Persona</div>
+  <div id="drawerList"></div>
+</div>
+
+<script>
+// ── Data ──
+const PERSONAS = {
+  dev:{
+    name:'Senior Developer',avatar:'🧑‍💻',color:'#00e5ff',
+    role:'// 10+ years exp',
+    sub:'technical mode',
+    emptyTitle:'Ask the Senior Dev',
+    emptyDesc:'Technical answers, code snippets, architecture — switch the persona to change perspective.',
+    chips:['Best way to structure APIs?','Explain async/await','Docker for beginners','Code review tips'],
+    system:`You are a Senior Software Developer with 10+ years of experience. Direct, precise, technical. Provide clean code snippets in markdown code blocks. Mention trade-offs. No fluff. Strong opinions on best practices.`
+  },
+  pm:{
+    name:'Product Manager',avatar:'📊',color:'#a78bfa',
+    role:'// Strategy & users',
+    sub:'product mode',
+    emptyTitle:'Think product with me',
+    emptyDesc:'User-centric strategy, metrics, roadmaps, and trade-offs. Every feature decision with reason.',
+    chips:['Prioritize my feature list','Write a user story','Define success metrics','How to run a sprint?'],
+    system:`You are an experienced Product Manager. Structure answers around: user problem → solution → metrics → trade-offs. Reference RICE, OKRs, Jobs-to-be-Done when relevant. Strategic, empathetic, data-driven. Practical and actionable.`
+  },
+  founder:{
+    name:'Startup Founder',avatar:'🚀',color:'#fb923c',
+    role:'// Move fast & build',
+    sub:'builder mode',
+    emptyTitle:"Let's build something big",
+    emptyDesc:'Bold first-principles thinking. Validate ideas, find markets, and move fast without overthinking.',
+    chips:['Validate my idea','How to get first users','Pitch deck structure','Find my target market'],
+    system:`You are a successful startup founder. Think first principles. Bold, fast, focused on execution. Talk market size, distribution, moats, growth loops. Short sentences, high energy. No corporate speak. Reference real startup examples.`
+  },
+  philosopher:{
+    name:'Philosopher',avatar:'🧠',color:'#34d399',
+    role:'// Deep thinking',
+    sub:'reflection mode',
+    emptyTitle:'Question everything',
+    emptyDesc:'Unpack assumptions. Explore multiple layers. Find the deeper why behind any idea or decision.',
+    chips:['Is AI conscious?','Ethics of automation','What is good software?','Nature of creativity'],
+    system:`You are a deep philosophical thinker bridging tech, ethics, and epistemology. Unpack assumptions, explore perspectives, use thought experiments and analogies. Draw on philosophy and cognitive science. End with a thought-provoking question.`
+  }
+};
+
+let current='dev';
+// ── Per-persona isolated histories ──
+const allMsgs={ dev:[], pm:[], founder:[], philosopher:[] };
+let loading=false;
+
+// ── Build static UI ──
+function buildPersonaRow(){
+  const row=document.getElementById('personaRow');
+  row.innerHTML=Object.entries(PERSONAS).map(([id,p])=>{
+    const count=allMsgs[id].filter(m=>m.role==='user').length;
+    return `
+    <div class="p-pill${id===current?' active':''}" data-id="${id}"
+         style="--p-c:${p.color}" onclick="switchPersona('${id}')">
+      <span class="p-pill-emoji">${p.avatar}</span>
+      <span class="p-pill-name">${p.name.split(' ')[0]}</span>
+      <span class="p-pill-badge${count>0?' show':''}" data-badge="${id}">${count}</span>
+    </div>`;
+  }).join('');
+}
+
+function buildDrawer(){
+  const list=document.getElementById('drawerList');
+  list.innerHTML=Object.entries(PERSONAS).map(([id,p])=>`
+    <div class="drawer-persona${id===current?' active':''}" data-id="${id}"
+         style="--dp-c:${p.color}" onclick="switchPersona('${id}');closeDrawer()">
+      <div class="dp-avatar">${p.avatar}</div>
+      <div class="dp-info">
+        <div class="dp-name">${p.name}</div>
+        <div class="dp-role" style="color:${p.color}">${p.role}</div>
+        <div class="dp-desc">${PERSONAS[id].emptyDesc.slice(0,72)}…</div>
+      </div>
+      <div class="dp-check">✓</div>
+    </div>`).join('');
+}
+
+function renderChips(){
+  const c=document.getElementById('chips');
+  c.innerHTML=PERSONAS[current].chips.map(ch=>
+    `<div class="chip" onclick="useChip('${ch.replace(/'/g,"\\'")}')">` +ch+`</div>`
+  ).join('');
+}
+
+// ── Switch Persona ──
+function switchPersona(id){
+  if(id===current && allMsgs[id].length===0) return; // no-op if same empty
+  const prev=current;
+  current=id;
+  const p=PERSONAS[id];
+
+  // ── UI accents ──
+  document.documentElement.style.setProperty('--acc',p.color);
+  document.getElementById('topAvatar').textContent=p.avatar;
+  document.getElementById('topAvatar').style.borderColor=p.color;
+  document.getElementById('topAvatar').style.boxShadow=`0 0 18px -4px ${p.color}`;
+  document.getElementById('topName').textContent=p.name;
+  document.getElementById('topSub').textContent=p.sub;
+  document.getElementById('liveDot').style.background=p.color;
+  document.getElementById('liveDot').style.boxShadow=`0 0 6px ${p.color}`;
+  document.getElementById('sendBtn').style.background=p.color;
+
+  // Pills
+  document.querySelectorAll('.p-pill').forEach(el=>{
+    el.classList.toggle('active',el.dataset.id===id);
+  });
+  const active=document.querySelector('.p-pill.active');
+  if(active) active.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+
+  // Drawer
+  document.querySelectorAll('.drawer-persona').forEach(el=>{
+    el.classList.toggle('active',el.dataset.id===id);
+  });
+
+  // ── Slide chat out then rebuild ──
+  const wrap=document.getElementById('messages');
+
+  wrap.classList.add('slide-out');
+  setTimeout(()=>{
+    wrap.classList.remove('slide-out');
+    rebuildChat(id);
+    wrap.classList.add('slide-in');
+    setTimeout(()=>wrap.classList.remove('slide-in'),300);
+  }, 180);
+}
+
+// ── Rebuild chat for persona ──
+function rebuildChat(id){
+  const p=PERSONAS[id];
+  const wrap=document.getElementById('messages');
+  wrap.innerHTML='';
+
+  const history=allMsgs[id];
+  if(history.length===0){
+    // show empty state
+    wrap.innerHTML=`<div class="empty" id="emptyState">
+      <div class="empty-emoji" id="emptyEmoji" style="filter:drop-shadow(0 0 20px ${p.color})">${p.avatar}</div>
+      <div class="empty-title" id="emptyTitle">${p.emptyTitle}</div>
+      <div class="empty-desc" id="emptyDesc">${p.emptyDesc}</div>
+      <div class="chips" id="chips"></div>
+    </div>`;
+    renderChips();
+    return;
+  }
+
+  // Re-render all past messages (no animation delay for history)
+  history.forEach(m=>{
+    const div=document.createElement('div');
+    div.className=`msg ${m.role}`;
+    div.style.animation='none'; div.style.opacity='1'; div.style.transform='none';
+    if(m.role==='assistant'){
+      div.innerHTML=`
+        <div class="m-avatar" style="border-color:${p.color};box-shadow:0 0 10px -3px ${p.color}">${p.avatar}</div>
+        <div class="bubble"><span class="p-tag" style="color:${p.color}">◆ ${p.name}</span>${fmt(m.content)}</div>`;
+    } else {
+      div.innerHTML=`
+        <div class="bubble" style="background:${p.color}">${m.content}</div>
+        <div class="m-avatar">👤</div>`;
+    }
+    wrap.appendChild(div);
+  });
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+
+function openDrawer(){
+  buildDrawer();
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerOverlay').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('open');
+}
+
+// ── Input helpers ──
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,110)+'px';
+}
+function handleKey(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+}
+function useChip(t){
+  document.getElementById('chatInput').value=t;
+  sendMessage();
+}
+
+// ── Markdown-lite ──
+function fmt(t){
+  return t
+    .replace(/```(\w*)\n?([\s\S]*?)```/g,'<pre><code>$2</code></pre>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g,'<em>$1</em>')
+    .replace(/\n/g,'<br>');
+}
+
+// ── Render message ──
+function renderMsg(role,text){
+  const wrap=document.getElementById('messages');
+  const p=PERSONAS[current];
+  const div=document.createElement('div');
+  div.className=`msg ${role}`;
+
+  if(role==='assistant'){
+    div.innerHTML=`
+      <div class="m-avatar" style="border-color:${p.color};box-shadow:0 0 10px -3px ${p.color}">${p.avatar}</div>
+      <div class="bubble"><span class="p-tag" style="color:${p.color}">◆ ${p.name}</span>${fmt(text)}</div>`;
+  } else {
+    div.innerHTML=`
+      <div class="bubble" style="background:${p.color}">${text}</div>
+      <div class="m-avatar">👤</div>`;
+  }
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+}
+
+// ── Typing ──
+function showTyping(){
+  const wrap=document.getElementById('messages');
+  const p=PERSONAS[current];
+  const div=document.createElement('div');
+  div.className='typing-wrap';
+  div.innerHTML=`
+    <div class="m-avatar" style="border-color:${p.color};box-shadow:0 0 10px -3px ${p.color}">${p.avatar}</div>
+    <div class="typing-dots">
+      <div class="tdot" style="background:${p.color}"></div>
+      <div class="tdot" style="background:${p.color}"></div>
+      <div class="tdot" style="background:${p.color}"></div>
+    </div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop=wrap.scrollHeight;
+  return div;
+}
+
+// ── Send ──
+async function sendMessage(){
+  const inp=document.getElementById('chatInput');
+  const text=inp.value.trim();
+  if(!text||loading) return;
+
+  // remove empty state
+  const es=document.getElementById('emptyState');
+  if(es) es.remove();
+
+  allMsgs[current].push({role:'user',content:text});
+  renderMsg('user',text);
+  updateBadge(current);
+  inp.value='';inp.style.height='auto';
+
+  const t=showTyping();
+  loading=true;
+  document.getElementById('sendBtn').disabled=true;
+
+  try{
+    const p=PERSONAS[current];
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:p.system,
+        messages:allMsgs[current]
+      })
+    });
+    const data=await res.json();
+    t.remove();
+    const reply=data.content?.[0]?.text||'Something went wrong. Please try again.';
+    allMsgs[current].push({role:'assistant',content:reply});
+    renderMsg('assistant',reply);
+  } catch(e){
+    t.remove();
+    renderMsg('assistant','⚠️ Connection error. Check your network.');
+    console.error(e);
+  }
+
+  loading=false;
+  document.getElementById('sendBtn').disabled=false;
+}
+
+// ── Badge ──
+function updateBadge(id){
+  const count=allMsgs[id].filter(m=>m.role==='user').length;
+  const badge=document.querySelector(`[data-badge="${id}"]`);
+  if(!badge) return;
+  badge.textContent=count;
+  badge.classList.toggle('show', count>0);
+}
+
+// ── Init ──
+buildPersonaRow();
+renderChips();
+switchPersona('dev');
+</script>
+</body>
+</html>
