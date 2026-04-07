@@ -1,0 +1,12 @@
+npm ki koi officially full form nhi hai , node ki taraf se but node package manager name eske kaam se align kar rha hai
+
+npm ke teen kaam hai -
+1. package install karna 
+2. package.json ko manage karna 
+3. project execute karna 
+
+crud - 
+c - post
+r - get
+u - put / patch
+d - delete
