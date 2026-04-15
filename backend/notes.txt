@@ -10,3 +10,6 @@ c - post
 r - get
 u - put / patch
 d - delete
+
+in sql - structure fixed hai
+in nosql - structure fixed nhi hai
